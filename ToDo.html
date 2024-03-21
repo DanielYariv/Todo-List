@@ -143,7 +143,15 @@
 
     <!-- TODO:change this to js file -->
     <script>
+      //handle local storage
+      if (localStorage["tasks"] != undefined) {
+        tasks = JSON.parse(localStorage["tasks"]);
+      } else {
+        tasks = [];
+      }
+
       document.addEventListener("DOMContentLoaded", init);
+
       function init() {
         let addTaskBtn = document.getElementById("addTaskBtn");
         let date = document.getElementById("chooseDate");
@@ -179,13 +187,24 @@
           }
           return success;
         };
-        // TODO:add localStorage
+        // TODO:add renderTask function
         const addTaskFunc = () => {
-          let taskId = Date.now().toString();
-          let str = "";
           if (validationFunc()) {
+            let task = {
+              taskId: Date.now().toString(),
+              taskName: taskName.value,
+              priority: priority.value,
+              date: date.value,
+              time: time.value,
+            };
+
+            tasks.push(task);
+
+            localStorage["tasks"] = JSON.stringify(tasks);
+
+            let str = "";
             str += `<li class="list-group-item">
-                <h5 class="card-title">${taskName.value}  
+                <h5 class="card-title">${taskName.value}
                 <input
                 class="form-check-input checkBox"
                 type="checkbox"
@@ -208,7 +227,7 @@
                       </h6>`;
             }
             str += `<h6 class="card-subtitle mb-2 text-body-secondary">
-                  <i class="bi bi-calendar"></i> ${date.value}, ${time.value} 
+                  <i class="bi bi-calendar"></i> ${date.value}, ${time.value}
                 </h6>
               </li>`;
 
