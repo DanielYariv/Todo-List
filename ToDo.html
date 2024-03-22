@@ -48,12 +48,12 @@
                 type="checkbox"
                 value=""
                 aria-label="..."
-                onclick="deleteTask(123)"
-                ;
+                onclick="deleteTaskFunc(123)"
               />
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
-              <i class="bi bi-calendar"></i> 10:00, 23.04
+              <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
+              10:00, 23.04
             </h6>
           </li>
           <li class="list-group-item">
@@ -160,33 +160,66 @@
         console.log(tasksArr);
         for (let i = 0; i < tasksArr.length; i++) {
           let str = "";
-          str += `<li class="list-group-item">
+          if (tasksArr[i]["finishTask"]) {
+            str += `<li class="list-group-item">
+                      <h5 class="card-title fw-lighter text-decoration-line-through">${tasksArr[i]["taskName"]}
+                      <input
+                      class="form-check-input checkBox"
+                      type="checkbox"
+                      value=""
+                      checked
+                      disabled 
+                      onclick="finishTaskfunc(${tasksArr[i].taskId})"
+                    /><i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+            if (tasksArr[i]["priority"] == "1") {
+              str += `<h6 class="priority bg-danger bg-gradient text-white fw-lighter text-decoration-line-through ">
+                               high
+                            </h6>`;
+            }
+            if (tasksArr[i]["priority"] == "2") {
+              str += `<h6 class="priority bg-warning bg-gradient text-white fw-lighter text-decoration-line-through ">
+                               medium
+                            </h6>`;
+            }
+            if (tasksArr[i]["priority"] == "3") {
+              str += `<h6 class="priority bg-light bg-gradient text-white fw-lighter text-decoration-line-through ">
+                               low
+                            </h6>`;
+            }
+            str += `<h6 class="card-subtitle mb-2 text-body-secondary fw-lighter text-decoration-line-through">
+                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}, ${tasksArr[i]["time"]}
+                      </h6>
+                    </li>`;
+          } else {
+            str += `<li class="list-group-item">
                       <h5 class="card-title">${tasksArr[i]["taskName"]}
                       <input
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
-                      onclick="deleteTask(${tasksArr[i].taskId})";
-                    /></h5>`;
-          if (tasksArr[i]["priority"] == "1") {
-            str += `<h6 class="priority bg-danger bg-gradient text-white ">
+                      onclick="finishTaskfunc (${tasksArr[i].taskId})";
+                    /><i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+            if (tasksArr[i]["priority"] == "1") {
+              str += `<h6 class="priority bg-danger bg-gradient text-white ">
                                high
                             </h6>`;
-          }
-          if (tasksArr[i]["priority"] == "2") {
-            str += `<h6 class="priority bg-warning bg-gradient text-white ">
+            }
+            if (tasksArr[i]["priority"] == "2") {
+              str += `<h6 class="priority bg-warning bg-gradient text-white ">
                                medium
                             </h6>`;
-          }
-          if (tasksArr[i]["priority"] == "3") {
-            str += `<h6 class="priority bg-success bg-gradient text-white ">
+            }
+            if (tasksArr[i]["priority"] == "3") {
+              str += `<h6 class="priority bg-light bg-gradient text-white ">
                                low
                             </h6>`;
-          }
-          str += `<h6 class="card-subtitle mb-2 text-body-secondary">
+            }
+            str += `<h6 class="card-subtitle mb-2 text-body-secondary">
                         <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}, ${tasksArr[i]["time"]}
                       </h6>
                     </li>`;
+          }
+
           dynamicUl.innerHTML += str;
         }
       }
@@ -194,19 +227,30 @@
       // find task index
       const findIndex = (taskId) => {
         for (let i = 0; i < tasks.length; i++) {
-          for (k in tasks[i]) {
-            if (tasks[i][k].indexOf(taskId) != -1) return i;
-          }
+          if (tasks[i]["taskId"].indexOf(taskId) != -1) return i;
         }
       };
 
       //delete task, update local storage, render remianing tasks to screen
-      function deleteTask(taskId) {
+      function deleteTaskfunc(taskId) {
         console.log(taskId);
-        let index = findIndex(taskId);
-        tasks.splice(index, 1);
+        let taskIndex = findIndex(taskId);
+        tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
         renderTasksFunc(tasks);
+      }
+
+      //finish task, update local storage, render tasks based on there finishTask value
+      function finishTaskfunc(taskId) {
+        let audio = new Audio("success-1-6297.mp3");
+        audio.play();
+        let index = findIndex(taskId);
+        tasks[index]["finishTask"] = true;
+        localStorage["tasks"] = JSON.stringify(tasks);
+        console.log(tasks);
+        setTimeout(function () {
+          renderTasksFunc(tasks);
+        }, 302);
       }
 
       function init() {
@@ -255,11 +299,13 @@
               priority: priority.value,
               date: date.value,
               time: time.value,
+              finishTask: false,
             };
 
             tasks.push(task);
             localStorage["tasks"] = JSON.stringify(tasks);
             renderTasksFunc(tasks);
+            location.reload();
           }
         };
 
