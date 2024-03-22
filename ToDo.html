@@ -32,7 +32,7 @@
         height: 1.3rem;
       }
 
-      /* TODO:fix the margin - finish task checkBox*/
+      /* TODO:fix the margin in - finish task checkBox*/
     </style>
   </head>
   <body>
@@ -48,6 +48,8 @@
                 type="checkbox"
                 value=""
                 aria-label="..."
+                onclick="deleteTask(123)"
+                ;
               />
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
@@ -152,6 +154,61 @@
 
       document.addEventListener("DOMContentLoaded", init);
 
+      //render tasks to screen
+      function renderTasksFunc(tasksArr) {
+        dynamicUl.innerHTML = "";
+        console.log(tasksArr);
+        for (let i = 0; i < tasksArr.length; i++) {
+          let str = "";
+          str += `<li class="list-group-item">
+                      <h5 class="card-title">${tasksArr[i]["taskName"]}
+                      <input
+                      class="form-check-input checkBox"
+                      type="checkbox"
+                      value=""
+                      onclick="deleteTask(${tasksArr[i].taskId})";
+                    /></h5>`;
+          if (tasksArr[i]["priority"] == "1") {
+            str += `<h6 class="priority bg-danger bg-gradient text-white ">
+                               high
+                            </h6>`;
+          }
+          if (tasksArr[i]["priority"] == "2") {
+            str += `<h6 class="priority bg-warning bg-gradient text-white ">
+                               medium
+                            </h6>`;
+          }
+          if (tasksArr[i]["priority"] == "3") {
+            str += `<h6 class="priority bg-success bg-gradient text-white ">
+                               low
+                            </h6>`;
+          }
+          str += `<h6 class="card-subtitle mb-2 text-body-secondary">
+                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}, ${tasksArr[i]["time"]}
+                      </h6>
+                    </li>`;
+          dynamicUl.innerHTML += str;
+        }
+      }
+
+      // find task index
+      const findIndex = (taskId) => {
+        for (let i = 0; i < tasks.length; i++) {
+          for (k in tasks[i]) {
+            if (tasks[i][k].indexOf(taskId) != -1) return i;
+          }
+        }
+      };
+
+      //delete task, update local storage, render remianing tasks to screen
+      function deleteTask(taskId) {
+        console.log(taskId);
+        let index = findIndex(taskId);
+        tasks.splice(index, 1);
+        localStorage["tasks"] = JSON.stringify(tasks);
+        renderTasksFunc(tasks);
+      }
+
       function init() {
         let addTaskBtn = document.getElementById("addTaskBtn");
         let date = document.getElementById("chooseDate");
@@ -161,33 +218,35 @@
         let dynamicUl = document.getElementById("dynamicUl");
         let taskModal = document.getElementById("taskModal");
 
-        //handle alerts
+        //variables for alerts handeling
         let taskNameP = document.getElementById("taskNameP");
         let dateP = document.getElementById("dateP");
         let priorityP = document.getElementById("priorityP");
-        let alertPArr = document.getElementsByClassName("alertP");
+
+        //render all the tasks to the screen
+        renderTasksFunc(tasks);
 
         const validationFunc = () => {
-          //get the date value without consider the time
-          let todayDate = Date.parse(new Date().toDateString());
+          let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
           let taskDate = Date.parse(new Date(date.value).toDateString());
-          let success = "true";
+          let isSuccess = "true";
 
           if (taskDate < todayDate || isNaN(taskDate)) {
             dateP.textContent = "choose valid date";
-            success = false;
+            isSuccess = false;
           }
           if (taskName.value == "") {
             taskNameP.textContent = "choose valid name";
-            success = false;
+            isSuccess = false;
           }
           if (priority.value == "") {
             priorityP.textContent = "choose priority";
-            success = false;
+            isSuccess = false;
           }
-          return success;
+          return isSuccess;
         };
-        // TODO:add renderTask function
+
+        // add task, update the local storage, render tasks to screen
         const addTaskFunc = () => {
           if (validationFunc()) {
             let task = {
@@ -199,48 +258,18 @@
             };
 
             tasks.push(task);
-
             localStorage["tasks"] = JSON.stringify(tasks);
-
-            let str = "";
-            str += `<li class="list-group-item">
-                <h5 class="card-title">${taskName.value}
-                <input
-                class="form-check-input checkBox"
-                type="checkbox"
-                value=""
-                aria-label="..."
-              /></h5>`;
-            if (priority.value == "1") {
-              str += `<h6 class="priority bg-danger bg-gradient text-white ">
-                         high
-                      </h6>`;
-            }
-            if (priority.value == "2") {
-              str += `<h6 class="priority bg-warning bg-gradient text-white ">
-                         medium
-                      </h6>`;
-            }
-            if (priority.value == "3") {
-              str += `<h6 class="priority bg-success bg-gradient text-white ">
-                         low
-                      </h6>`;
-            }
-            str += `<h6 class="card-subtitle mb-2 text-body-secondary">
-                  <i class="bi bi-calendar"></i> ${date.value}, ${time.value}
-                </h6>
-              </li>`;
-
-            dynamicUl.innerHTML += str;
+            renderTasksFunc(tasks);
           }
         };
-
-        addTaskBtn.addEventListener("click", addTaskFunc);
 
         //clear alerts
         const cleanPAlertsFunc = (p) => {
           if (p.textContent !== "") p.textContent = "";
         };
+
+        //event listeners - add task, clear alerts
+        addTaskBtn.addEventListener("click", addTaskFunc);
 
         taskName.addEventListener("blur", () => {
           cleanPAlertsFunc(taskNameP);
