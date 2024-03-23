@@ -31,6 +31,9 @@
         text-align: center;
         height: 1.3rem;
       }
+      .form-check-input[type="checkbox"] {
+        border-radius: 50em;
+      }
 
       /* TODO:fix the margin in - finish task checkBox*/
     </style>
@@ -118,9 +121,6 @@
                 <input type="date" id="chooseDate" class="form-control" />
                 <p id="dateP" class="alertP"></p>
               </div>
-              <div class="mb-3">
-                <input type="time" id="chooseTime" class="form-control" />
-              </div>
             </div>
             <div class="modal-footer">
               <button
@@ -162,43 +162,47 @@
           let str = "";
           if (tasksArr[i]["finishTask"]) {
             str += `<li class="list-group-item">
-                      <h5 class="card-title fw-lighter text-decoration-line-through">${tasksArr[i]["taskName"]}
+                      <h5 class="card-title fw-lighter text-decoration-line-through">
                       <input
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
                       checked
-                      disabled 
+                      disabled
                       onclick="finishTaskfunc(${tasksArr[i].taskId})"
-                    /><i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+                    />
+                      ${tasksArr[i]["taskName"]}
+                      <i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
             if (tasksArr[i]["priority"] == "1") {
-              str += `<h6 class="priority bg-danger bg-gradient text-white fw-lighter text-decoration-line-through ">
+              str += `<h6 class="priority bg-danger bg-gradient text-white fw-light text-decoration-line-through ">
                                high
                             </h6>`;
             }
             if (tasksArr[i]["priority"] == "2") {
-              str += `<h6 class="priority bg-warning bg-gradient text-white fw-lighter text-decoration-line-through ">
+              str += `<h6 class="priority bg-warning bg-gradient text-white fw-light text-decoration-line-through ">
                                medium
                             </h6>`;
             }
             if (tasksArr[i]["priority"] == "3") {
-              str += `<h6 class="priority bg-light bg-gradient text-white fw-lighter text-decoration-line-through ">
+              str += `<h6 class="priority bg-info bg-gradient text-white fw-light text-decoration-line-through ">
                                low
                             </h6>`;
             }
             str += `<h6 class="card-subtitle mb-2 text-body-secondary fw-lighter text-decoration-line-through">
-                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}, ${tasksArr[i]["time"]}
+                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}
                       </h6>
                     </li>`;
           } else {
             str += `<li class="list-group-item">
-                      <h5 class="card-title">${tasksArr[i]["taskName"]}
+                      <h5 class="card-title">
                       <input
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
                       onclick="finishTaskfunc (${tasksArr[i].taskId})";
-                    /><i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+                    />
+                    ${tasksArr[i]["taskName"]}
+                     <i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
             if (tasksArr[i]["priority"] == "1") {
               str += `<h6 class="priority bg-danger bg-gradient text-white ">
                                high
@@ -210,12 +214,12 @@
                             </h6>`;
             }
             if (tasksArr[i]["priority"] == "3") {
-              str += `<h6 class="priority bg-light bg-gradient text-white ">
+              str += `<h6 class="priority bg-info bg-gradient text-white ">
                                low
                             </h6>`;
             }
             str += `<h6 class="card-subtitle mb-2 text-body-secondary">
-                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}, ${tasksArr[i]["time"]}
+                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}
                       </h6>
                     </li>`;
           }
@@ -247,18 +251,28 @@
         let index = findIndex(taskId);
         tasks[index]["finishTask"] = true;
         localStorage["tasks"] = JSON.stringify(tasks);
+        sortTasksFunction();
         console.log(tasks);
         setTimeout(function () {
           renderTasksFunc(tasks);
         }, 302);
       }
 
+      //sort by dates and if equal by priority
+      function sortTasksFunction() {
+        tasks.sort(function (a, b) {
+          return (
+            a.finishTask - b.finishTask ||
+            Date.parse(a.date) - Date.parse(b.date) ||
+            a.priority - b.priority
+          );
+        });
+      }
       function init() {
         let addTaskBtn = document.getElementById("addTaskBtn");
         let date = document.getElementById("chooseDate");
         let taskName = document.getElementById("taskName");
         let priority = document.getElementById("prioritySelect");
-        let time = document.getElementById("chooseTime");
         let dynamicUl = document.getElementById("dynamicUl");
         let taskModal = document.getElementById("taskModal");
 
@@ -292,17 +306,19 @@
 
         // add task, update the local storage, render tasks to screen
         const addTaskFunc = () => {
+          console.log(Date.now());
+          console.log(Date.now().toString());
           if (validationFunc()) {
             let task = {
               taskId: Date.now().toString(),
               taskName: taskName.value,
               priority: priority.value,
               date: date.value,
-              time: time.value,
               finishTask: false,
             };
 
             tasks.push(task);
+            sortTasksFunction();
             localStorage["tasks"] = JSON.stringify(tasks);
             renderTasksFunc(tasks);
             location.reload();
