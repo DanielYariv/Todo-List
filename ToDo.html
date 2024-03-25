@@ -42,76 +42,78 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>To Do</h1>
-      <div class="card" style="width: 18rem">
-        <ul id="dynamicUl" class="list-group list-group-flush">
-          <li class="list-group-item">
-            <h5 class="card-title">
-              go to gym
-              <input
-                class="form-check-input checkBox"
-                type="checkbox"
-                value=""
-                aria-label="..."
-                onclick="deleteTaskFunc(123)"
-              />
-            </h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">
-              <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
-              10:00, 23.04
-            </h6>
-          </li>
-          <li class="list-group-item">
-            <h5 class="card-title">
-              Card title
-              <input
-                class="form-check-input checkBox"
-                type="checkbox"
-                value=""
-              />
-            </h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">
-              Card subtitle
-            </h6>
-          </li>
-        </ul>
+    <div class="container row">
+      <!-- tasks card -->
+      <div class="col - 6 ms-5">
+        <h1>To Do</h1>
+        <div class="card" style="width: 18rem">
+          <ul id="dynamicUl" class="list-group list-group-flush">
+            <li class="list-group-item">
+              <h5 class="card-title">
+                go to gym
+                <input
+                  class="form-check-input checkBox"
+                  type="checkbox"
+                  value=""
+                  aria-label="..."
+                  onclick="deleteTaskFunc(123)"
+                />
+              </h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">
+                <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
+                10:00, 23.04
+              </h6>
+            </li>
+            <li class="list-group-item">
+              <h5 class="card-title">
+                Card title
+                <input
+                  class="form-check-input checkBox"
+                  type="checkbox"
+                  value=""
+                />
+              </h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">
+                Card subtitle
+              </h6>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Button to trigger add task modal -->
+        <button
+          type="button"
+          class="btn btn-danger btn-circle"
+          data-bs-toggle="modal"
+          data-bs-target="#taskModal"
+        >
+          <i class="bi bi-plus"></i>
+        </button>
       </div>
 
-      <!-- Button to trigger add task modal -->
-      <button
-        type="button"
-        class="btn btn-danger btn-circle"
-        data-bs-toggle="modal"
-        data-bs-target="#taskModal"
-      >
-        <i class="bi bi-plus"></i>
-      </button>
+      <!-- summarize card -->
+      <div class="col-6 mt-5">
+        <h1>summary</h1>
+        <div class="card" style="width: 18rem">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <h5 class="card-title">Today:</h5>
+              <h6
+                id="dynamicCompletedToday"
+                class="card-subtitle mb-2 text-body-secondary"
+              ></h6>
+            </li>
+            <li class="list-group-item">
+              <h5 class="card-title">Completed Tasks:</h5>
+              <h6
+                id="dynamicCompleted"
+                class="card-subtitle mb-2 text-body-secondary"
+              ></h6>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-
-    <!-- summarize card -->
-    <div class="container">
-      <h1>summary</h1>
-      <div class="card" style="width: 18rem">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <h5 class="card-title">
-              Today:  
-            </h5>
-            <h6 id="dynamicCompletedToday" class="card-subtitle mb-2 text-body-secondary">
-              
-            </h6>
-          </li>
-          <li class="list-group-item">
-            <h5 class="card-title">
-              Completed Tasks: 
-            </h5>
-            <h6 id="dynamicCompleted" class="card-subtitle mb-2 text-body-secondary">
-              
-            </h6>
-          </li>
-        </ul>
-      </div>
     <!-- add task modal -->
     <div
       class="modal fade"
@@ -250,7 +252,6 @@
 
           dynamicUl.innerHTML += str;
         }
-        summaryFunc();// render the summary function on every change
       }
 
       // find task index
@@ -267,6 +268,7 @@
         tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
         renderTasksFunc(tasks);
+        summaryFunc();
       }
 
       //finish task, update local storage, render tasks based on there finishTask value
@@ -278,6 +280,7 @@
         sortTasksFunction();
         localStorage["tasks"] = JSON.stringify(tasks);
         console.log(tasks);
+        summaryFunc();
         setTimeout(function () {
           renderTasksFunc(tasks);
         }, 302);
@@ -294,6 +297,31 @@
         });
       }
 
+      //function for summarize
+      // TODO:change all the function i want to use localStorage
+      function summaryFunc() {
+        let completed = document.getElementById("dynamicCompleted");
+        let completedToday = document.getElementById("dynamicCompletedToday");
+        let todayTa = 0;
+        let todayCo = 0;
+        let totalCo = 0;
+        let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
+        for (let i = 0; i < tasks.length; i++) {
+          let taskDate = Date.parse(new Date(tasks[i].date).toDateString());
+          if (todayDate == taskDate) {
+            todayTa++;
+            if (tasks[i].finishTask == true) {
+              todayCo++;
+            }
+          }
+          if (tasks[i].finishTask == true) {
+            totalCo++;
+          }
+        }
+        completed.innerHTML = totalCo + "/" + tasks.length;
+        completedToday.innerHTML = todayCo + "/" + todayTa;
+      }
+
       function init() {
         let addTaskBtn = document.getElementById("addTaskBtn");
         let date = document.getElementById("chooseDate");
@@ -307,14 +335,12 @@
         let dateP = document.getElementById("dateP");
         let priorityP = document.getElementById("priorityP");
 
-        //variables for summary card
-        let completed = document.getElementById("dynamicCompleted");
-        let completedToday = document.getElementById("dynamicCompletedToday");
-
-
         //render all the tasks to the screen
         renderTasksFunc(tasks);
 
+        //render summary to the screen
+        summaryFunc();
+        //validation for task inputs from user
         const validationFunc = () => {
           let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
           let taskDate = Date.parse(new Date(date.value).toDateString());
@@ -350,36 +376,11 @@
             sortTasksFunction();
             localStorage["tasks"] = JSON.stringify(tasks);
             renderTasksFunc(tasks);
+            summaryFunc();
             location.reload();
           }
         };
 
-        //function for summarize
-        // TODO:change all the function i want to use localStorage
-        function summaryFunc(){
-          let todayTa=0;
-          let todayCo=0;
-          let totalCo=0;
-          let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
-          for(let i=0;i<tasks.length;i++){
-            let taskDate = Date.parse(new Date(tasks[i].date).toDateString());
-            if(todayDate==taskDate){
-              todayTa++;
-              if(tasks[i].finishTask==true){
-                todayCo++;
-              }
-            }
-            if(tasks[i].finishTask==true)
-            {
-              totalCo++;
-
-            }
-
-          }        
-         completed.innerHTML = totalCo+'/'+tasks.length;
-         completedToday.innerHTML += todayCo+'/'+todayTa;
-        }
-        
         //clear alerts
         const cleanPAlertsFunc = (p) => {
           if (p.textContent !== "") p.textContent = "";
@@ -396,7 +397,7 @@
         });
         priority.addEventListener("blur", () => {
           cleanPAlertsFunc(priorityP);
-        });        
+        });
       }
     </script>
     <!-- my js  -->
