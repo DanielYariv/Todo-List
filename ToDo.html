@@ -37,6 +37,14 @@
       .trash {
         padding-left: 80%;
       }
+      .list-group-item {
+        background-color: #f8da69;
+      }
+
+      .bi-pencil:hover,
+      .bi-trash3:hover {
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -81,7 +89,7 @@
         <!-- Button to trigger add task modal -->
         <button
           type="button"
-          id="triggerModalBtn"
+          id="addTaskModalBtn"
           class="btn btn-danger btn-circle"
           data-bs-toggle="modal"
           data-bs-target="#taskModal"
@@ -91,7 +99,7 @@
       </div>
 
       <!-- summarize card -->
-      <div class="col-6 mt-5">
+      <div class="col-6">
         <h1>summary</h1>
         <div class="card" style="width: 18rem">
           <ul class="list-group list-group-flush">
@@ -113,6 +121,7 @@
         </div>
       </div>
     </div>
+
     <!-- add task modal -->
     <div
       class="modal fade"
@@ -188,6 +197,8 @@
 
       //global variable to toggle between edit and new tasks
       let isEdit = "false";
+      //global variable to find spesific task to edit
+      let editTaskId = 0;
 
       // TODO:fix the english below
       //to handle all the logic that needed to be run after the html finish loading
@@ -240,7 +251,7 @@
                      <i class="bi bi-pencil"
                       data-bs-toggle="modal"
                       data-bs-target="#taskModal"
-                      onclick="editTaskfunc(${tasksArr[i].taskId})">
+                      onclick="editTaskModalBtn(${tasksArr[i].taskId})">
                       </i>
                       </h5>`;
             if (tasksArr[i]["priority"] == "1") {
@@ -311,9 +322,11 @@
         });
       }
 
-      function editTaskfunc(taskId) {
+      //function to change user ui from adding to edit
+      function editTaskModalBtn(taskId) {
         // TODO: check why i cant use the listeneres from init it work with taskName and not with priority and date they undefined
         let taskIndex = findIndex(taskId);
+        editTaskId = taskId;
         let taskName = document.getElementById("taskName");
         let priority = document.getElementById("prioritySelect");
         let date = document.getElementById("chooseDate");
@@ -361,7 +374,8 @@
         let dynamicUl = document.getElementById("dynamicUl");
         let taskModal = document.getElementById("taskModal");
 
-        let triggerModalBtn = document.getElementById("triggerModalBtn");
+        //TODO:for edit
+        let addTaskModalBtn = document.getElementById("addTaskModalBtn");
         let editTaskBtn = document.getElementById("editTaskBtn");
 
         //variables for alerts handeling
@@ -395,9 +409,14 @@
           return isSuccess;
         };
 
-        // add task, update the local storage, render tasks to screen
+        // add task, update the local storage, render tasks to screen.
+        // or
+        // handle edit task.
         const addTaskFunc = () => {
           if (validationFunc()) {
+            if (isEdit) {
+              deleteTaskfunc(editTaskId);
+            }
             let task = {
               taskId: Date.now().toString(),
               taskName: taskName.value,
@@ -423,14 +442,17 @@
         //event listener - add task, clear alerts
         addTaskBtn.addEventListener("click", addTaskFunc);
 
-        //event listener - edit task
+        //event listener - edit task, clear alerts
         editTaskBtn.addEventListener("click", addTaskFunc);
 
-        //event listener - change button to add task button
-        triggerModalBtn.addEventListener("click", () => {
-          isEdit = "false";
+        //event listener - open modal for adding task
+        addTaskModalBtn.addEventListener("click", () => {
+          isEdit = false;
           addTaskBtn.style.display = "block";
           editTaskBtn.style.display = "none";
+          taskName.value = "";
+          priority.value = "";
+          date.value = "";
         });
 
         //event listeners - clear alerts
