@@ -34,6 +34,9 @@
       .form-check-input[type="checkbox"] {
         border-radius: 50em;
       }
+      .trash {
+        padding-left: 80%;
+      }
 
       /* TODO:fix the margin in - finish task checkBox*/
     </style>
@@ -75,7 +78,7 @@
         </ul>
       </div>
 
-      <!-- Button trigger add task modal -->
+      <!-- Button to trigger add task modal -->
       <button
         type="button"
         class="btn btn-danger btn-circle"
@@ -84,53 +87,76 @@
       >
         <i class="bi bi-plus"></i>
       </button>
+    </div>
 
-      <!-- add task modal -->
-      <div
-        class="modal fade"
-        id="taskModal"
-        tabindex="-1"
-        aria-labelledby="taskModal"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="taskModalLabel">New Task</h5>
+    <!-- summarize card -->
+    <div class="container">
+      <h1>summary</h1>
+      <div class="card" style="width: 18rem">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <h5 class="card-title">
+              Today:  
+            </h5>
+            <h6 id="dynamicCompletedToday" class="card-subtitle mb-2 text-body-secondary">
+              
+            </h6>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">
+              Completed Tasks: 
+            </h5>
+            <h6 id="dynamicCompleted" class="card-subtitle mb-2 text-body-secondary">
+              
+            </h6>
+          </li>
+        </ul>
+      </div>
+    <!-- add task modal -->
+    <div
+      class="modal fade"
+      id="taskModal"
+      tabindex="-1"
+      aria-labelledby="taskModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="taskModalLabel">New Task</h5>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="taskName"
+                placeholder="Task Name"
+              />
+              <p id="taskNameP" class="alertP"></p>
             </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="taskName"
-                  placeholder="Task Name"
-                />
-                <p id="taskNameP" class="alertP"></p>
-              </div>
-              <div class="mb-3">
-                <select id="prioritySelect" class="form-select">
-                  <option value="" selected>Priority</option>
-                  <option value="1">High</option>
-                  <option value="2">Medium</option>
-                  <option value="3">Low</option>
-                </select>
-                <p id="priorityP" class="alertP"></p>
-              </div>
-              <div class="mb-3">
-                <input type="date" id="chooseDate" class="form-control" />
-                <p id="dateP" class="alertP"></p>
-              </div>
+            <div class="mb-3">
+              <select id="prioritySelect" class="form-select">
+                <option value="" selected>Priority</option>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
+              </select>
+              <p id="priorityP" class="alertP"></p>
             </div>
-            <div class="modal-footer">
-              <button
-                id="addTaskBtn"
-                type="button"
-                class="btn btn-danger btn-circle"
-              >
-                <i class="bi bi-arrow-up"></i>
-              </button>
+            <div class="mb-3">
+              <input type="date" id="chooseDate" class="form-control" />
+              <p id="dateP" class="alertP"></p>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="addTaskBtn"
+              type="button"
+              class="btn btn-danger btn-circle"
+            >
+              <i class="bi bi-arrow-up"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -152,9 +178,12 @@
         tasks = [];
       }
 
+      // TODO:fix the english below
+      //to handle all the logic that needed to be run after the html finish loading
       document.addEventListener("DOMContentLoaded", init);
 
       //render tasks to screen
+      // TODO:CHECK IF I CAN DELETE TASKARR AND LEFT ONLY WITH tASK
       function renderTasksFunc(tasksArr) {
         dynamicUl.innerHTML = "";
         console.log(tasksArr);
@@ -163,16 +192,10 @@
           if (tasksArr[i]["finishTask"]) {
             str += `<li class="list-group-item">
                       <h5 class="card-title fw-lighter text-decoration-line-through">
-                      <input
-                      class="form-check-input checkBox"
-                      type="checkbox"
-                      value=""
-                      checked
-                      disabled
-                      onclick="finishTaskfunc(${tasksArr[i].taskId})"
-                    />
+                        <i class="bi bi-clipboard-check pe-2"></i>
                       ${tasksArr[i]["taskName"]}
-                      <i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+                      <i class="bi bi-trash3 trash" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i>
+                      </h5>`;
             if (tasksArr[i]["priority"] == "1") {
               str += `<h6 class="priority bg-danger bg-gradient text-white fw-light text-decoration-line-through ">
                                high
@@ -202,7 +225,8 @@
                       onclick="finishTaskfunc (${tasksArr[i].taskId})";
                     />
                     ${tasksArr[i]["taskName"]}
-                     <i class="bi bi-trash3" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i></h5>`;
+                     <i class="bi bi-trash3 trash" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i>
+                     <i class="bi bi-pencil"></i></h5>`;
             if (tasksArr[i]["priority"] == "1") {
               str += `<h6 class="priority bg-danger bg-gradient text-white ">
                                high
@@ -226,6 +250,7 @@
 
           dynamicUl.innerHTML += str;
         }
+        summaryFunc();// render the summary function on every change
       }
 
       // find task index
@@ -250,8 +275,8 @@
         audio.play();
         let index = findIndex(taskId);
         tasks[index]["finishTask"] = true;
-        localStorage["tasks"] = JSON.stringify(tasks);
         sortTasksFunction();
+        localStorage["tasks"] = JSON.stringify(tasks);
         console.log(tasks);
         setTimeout(function () {
           renderTasksFunc(tasks);
@@ -268,6 +293,7 @@
           );
         });
       }
+
       function init() {
         let addTaskBtn = document.getElementById("addTaskBtn");
         let date = document.getElementById("chooseDate");
@@ -280,6 +306,11 @@
         let taskNameP = document.getElementById("taskNameP");
         let dateP = document.getElementById("dateP");
         let priorityP = document.getElementById("priorityP");
+
+        //variables for summary card
+        let completed = document.getElementById("dynamicCompleted");
+        let completedToday = document.getElementById("dynamicCompletedToday");
+
 
         //render all the tasks to the screen
         renderTasksFunc(tasks);
@@ -306,8 +337,6 @@
 
         // add task, update the local storage, render tasks to screen
         const addTaskFunc = () => {
-          console.log(Date.now());
-          console.log(Date.now().toString());
           if (validationFunc()) {
             let task = {
               taskId: Date.now().toString(),
@@ -325,6 +354,32 @@
           }
         };
 
+        //function for summarize
+        // TODO:change all the function i want to use localStorage
+        function summaryFunc(){
+          let todayTa=0;
+          let todayCo=0;
+          let totalCo=0;
+          let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
+          for(let i=0;i<tasks.length;i++){
+            let taskDate = Date.parse(new Date(tasks[i].date).toDateString());
+            if(todayDate==taskDate){
+              todayTa++;
+              if(tasks[i].finishTask==true){
+                todayCo++;
+              }
+            }
+            if(tasks[i].finishTask==true)
+            {
+              totalCo++;
+
+            }
+
+          }        
+         completed.innerHTML = totalCo+'/'+tasks.length;
+         completedToday.innerHTML += todayCo+'/'+todayTa;
+        }
+        
         //clear alerts
         const cleanPAlertsFunc = (p) => {
           if (p.textContent !== "") p.textContent = "";
@@ -341,7 +396,7 @@
         });
         priority.addEventListener("blur", () => {
           cleanPAlertsFunc(priorityP);
-        });
+        });        
       }
     </script>
     <!-- my js  -->
