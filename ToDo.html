@@ -37,8 +37,6 @@
       .trash {
         padding-left: 80%;
       }
-
-      /* TODO:fix the margin in - finish task checkBox*/
     </style>
   </head>
   <body>
@@ -83,6 +81,7 @@
         <!-- Button to trigger add task modal -->
         <button
           type="button"
+          id="triggerModalBtn"
           class="btn btn-danger btn-circle"
           data-bs-toggle="modal"
           data-bs-target="#taskModal"
@@ -159,6 +158,13 @@
             >
               <i class="bi bi-arrow-up"></i>
             </button>
+            <button
+              id="editTaskBtn"
+              type="button"
+              class="btn btn-danger btn-circle"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -179,6 +185,9 @@
       } else {
         tasks = [];
       }
+
+      //global variable to toggle between edit and new tasks
+      let isEdit = "false";
 
       // TODO:fix the english below
       //to handle all the logic that needed to be run after the html finish loading
@@ -228,7 +237,12 @@
                     />
                     ${tasksArr[i]["taskName"]}
                      <i class="bi bi-trash3 trash" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i>
-                     <i class="bi bi-pencil"></i></h5>`;
+                     <i class="bi bi-pencil"
+                      data-bs-toggle="modal"
+                      data-bs-target="#taskModal"
+                      onclick="editTaskfunc(${tasksArr[i].taskId})">
+                      </i>
+                      </h5>`;
             if (tasksArr[i]["priority"] == "1") {
               str += `<h6 class="priority bg-danger bg-gradient text-white ">
                                high
@@ -297,8 +311,25 @@
         });
       }
 
+      function editTaskfunc(taskId) {
+        // TODO: check why i cant use the listeneres from init it work with taskName and not with priority and date they undefined
+        let taskIndex = findIndex(taskId);
+        let taskName = document.getElementById("taskName");
+        let priority = document.getElementById("prioritySelect");
+        let date = document.getElementById("chooseDate");
+        let addTaskBtn = document.getElementById("addTaskBtn");
+        let editTaskBtn = document.getElementById("editTaskBtn");
+
+        addTaskBtn.style.display = "none";
+        editTaskBtn.style.display = "block";
+        isEdit = "true";
+        taskName.value = tasks[taskIndex].taskName;
+        priority.value = tasks[taskIndex].priority;
+        date.value = tasks[taskIndex].date;
+      }
+
       //function for summarize
-      // TODO:change all the function i want to use localStorage
+      // TODO:check if to change all the function i want to use localStorage
       function summaryFunc() {
         let completed = document.getElementById("dynamicCompleted");
         let completedToday = document.getElementById("dynamicCompletedToday");
@@ -329,6 +360,9 @@
         let priority = document.getElementById("prioritySelect");
         let dynamicUl = document.getElementById("dynamicUl");
         let taskModal = document.getElementById("taskModal");
+
+        let triggerModalBtn = document.getElementById("triggerModalBtn");
+        let editTaskBtn = document.getElementById("editTaskBtn");
 
         //variables for alerts handeling
         let taskNameP = document.getElementById("taskNameP");
@@ -386,9 +420,20 @@
           if (p.textContent !== "") p.textContent = "";
         };
 
-        //event listeners - add task, clear alerts
+        //event listener - add task, clear alerts
         addTaskBtn.addEventListener("click", addTaskFunc);
 
+        //event listener - edit task
+        editTaskBtn.addEventListener("click", addTaskFunc);
+
+        //event listener - change button to add task button
+        triggerModalBtn.addEventListener("click", () => {
+          isEdit = "false";
+          addTaskBtn.style.display = "block";
+          editTaskBtn.style.display = "none";
+        });
+
+        //event listeners - clear alerts
         taskName.addEventListener("blur", () => {
           cleanPAlertsFunc(taskNameP);
         });
