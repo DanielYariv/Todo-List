@@ -171,7 +171,9 @@
             </div>
             <div class="mb-3">
               <select id="prioritySelect" class="form-select">
-                <option value="" selected>Priority</option>
+                <option style="display: none" value="" selected>
+                  Priority
+                </option>
                 <option value="1">High</option>
                 <option value="2">Medium</option>
                 <option value="3">Low</option>
@@ -264,7 +266,7 @@
                       <h5 class="card-title fw-lighter text-decoration-line-through">
                         <i class="bi bi-clipboard-check pe-2"></i>
                       ${tasksArr[i]["taskName"]}
-                      <i class="bi bi-trash3 trash" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i>
+                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
                       </h5>`;
             str += renderPriorityFunc(tasksArr[i]["priority"]);
             str += `<h6 class="card-subtitle mb-2 text-body-secondary fw-lighter">
@@ -278,10 +280,10 @@
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
-                      onclick="finishTaskfunc (${tasksArr[i].taskId})";
+                      onclick="finishTaskFunc (${tasksArr[i].taskId})";
                     />
                     ${tasksArr[i]["taskName"]}
-                     <i class="bi bi-trash3 trash" onclick="deleteTaskfunc(${tasksArr[i].taskId})"></i>
+                     <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
                      <i class="bi bi-pencil"
                       data-bs-toggle="modal"
                       data-bs-target="#taskModal"
@@ -326,7 +328,7 @@
       }
 
       //render all the deleted tasks to the deletet card
-      function renderDeletedTasksfunc() {
+      function renderDeletedTasksFunc() {
         deletedCard.innerHTML = "";
         console.log(deletedTasks);
         for (let i = 0; i < deletedTasks.length; i++) {
@@ -351,26 +353,26 @@
         }
       };
 
-      //delete task, update local storage, render remianing tasks to screen
-      function deleteTaskfunc(taskId) {
+      //delete task, update local storage, render remaining tasks to screen
+      function deleteTaskFunc(taskId) {
         console.log(taskId);
         let taskIndex = findIndex(taskId);
 
-        deletedTasks.push(tasks[taskIndex]);
+        deletedTasks.unshift(tasks[taskIndex]);
         localStorage["deletedTasks"] = JSON.stringify(deletedTasks);
 
         tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
         renderTasksFunc(tasks);
         summaryFunc();
-        renderDeletedTasksfunc();
+        renderDeletedTasksFunc();
         deletedTasks.sort(function (a, b) {
           return Date.parse(a.date) - Date.parse(b.date);
         });
       }
 
       //finish task, update local storage, render tasks based on there finishTask value
-      function finishTaskfunc(taskId) {
+      function finishTaskFunc(taskId) {
         let audio = new Audio("success-1-6297.mp3");
         audio.play();
         let index = findIndex(taskId);
@@ -397,7 +399,7 @@
 
       //function to change user ui from adding to edit
       function editTaskModalBtnFunc(taskId) {
-        // TODO: check why i cant use the listeneres from init it work with taskName and not with priority and date they undefined
+        // TODO: check why i cant use the listeners from init it work with taskName and not with priority and date they undefined
         let taskIndex = findIndex(taskId);
         editTaskId = taskId;
         addTaskBtn.style.display = "none";
@@ -460,7 +462,7 @@
       const addTaskFunc = () => {
         if (validationFunc()) {
           if (isEdit) {
-            deleteTaskfunc(editTaskId);
+            deleteTaskFunc(editTaskId);
           }
           let task = {
             taskId: Date.now().toString(),
@@ -482,7 +484,7 @@
       function expandDeletedFunc() {
         if (deletedCard.style.display == "none") {
           deletedCard.style.display = "block";
-          renderDeletedTasksfunc();
+          renderDeletedTasksFunc();
         } else {
           deletedCard.style.display = "none";
         }
