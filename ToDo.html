@@ -34,11 +34,9 @@
       .form-check-input[type="checkbox"] {
         border-radius: 50em;
       }
-      .trash {
-        padding-left: 80%;
-      }
+
       .list-group-item {
-        background-color: #f8da69;
+        background-color: grey;
       }
 
       .bi-pencil:hover,
@@ -48,110 +46,142 @@
       .form-check-input:hover {
         cursor: pointer;
       }
+      .gradient {
+        background: linear-gradient(#28313b, #485461);
+      }
+      .checkBox {
+        background: grey;
+      }
+      .trash,
+      .pencil {
+        display: none;
+      }
+      .list-group-item:hover .trash,
+      .list-group-item:hover .pencil {
+        display: inline-block;
+        justify-content: space-between;
+      }
     </style>
   </head>
   <body>
-    <div class="container row">
-      <!-- tasks card -->
-      <div class="col-4">
-        <h1>To Do</h1>
-          
-          <!-- Button to trigger add task modal -->
-          <span
-            ><button
-              type="button"
-              id="addTaskModalBtn"
-              class="btn btn-danger btn-circle"
-              data-bs-toggle="modal"
-              data-bs-target="#taskModal"
-            >
-              <i class="bi bi-plus"></i>
-            </button>
-          </span>
-        </h1>
-        <div class="card" style="width: 18rem">
-          <ul id="dynamicUl" class="list-group list-group-flush">
-            <li class="list-group-item">
-              <h5 class="card-title">
-                go to gym
-                <input
-                  class="form-check-input checkBox"
-                  type="checkbox"
-                  value=""
-                  aria-label="..."
-                  onclick="deleteTaskFunc(123)"
-                />
-              </h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">
-                <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
-                10:00, 23.04
-              </h6>
-            </li>
-            <li class="list-group-item">
-              <h5 class="card-title">
-                Card title
-                <input
-                  class="form-check-input checkBox"
-                  type="checkbox"
-                  value=""
-                />
-              </h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">
-                Card subtitle
-              </h6>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- summarize card -->
-      <div class="col-4">
-        <h1>summary</h1>
-        <div class="card" style="width: 18rem">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <h5 class="card-title">Today Tasks:</h5>
-              <h6
-                id="dynamicCompletedToday"
-                class="card-subtitle mb-2 text-body-secondary"
-              ></h6>
-            </li>
-            <li class="list-group-item">
-              <h5 class="card-title">Total Completed Tasks:</h5>
-              <h6
-                id="dynamicCompleted"
-                class="card-subtitle mb-2 text-body-secondary"
-              ></h6>
-            </li>
-            <li class="list-group-item">
-              <h5 class="card-title">Total deleted Tasks:</h5>
-              <h6
-                id="dynamicDeleted"
-                class="card-subtitle mb-2 text-body-secondary"
+    <section class="vh-100 gradient">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col col-xl-10">
+            <!-- bav bar -->
+            <ul class="nav nav-tabs mb-4 pb-2" id="ToDoNav" role="tablist">
+              <li
+                id="allTasksNav"
+                class="nav-item nav-link"
+                role="presentation"
               >
-                <span id="dynamicTotalDeleted"></span>
-                <i
-                  id="expandDeletedBtn"
-                  class="bi bi-chevron-expand border border-dark border-1 rounded-pill"
-                ></i>
-              </h6>
-            </li>
-          </ul>
-        </div>
-      </div>
+                All
+              </li>
+              <li id="deletedNav" class="nav-item nav-link" role="presentation">
+                Deleted
+              </li>
+              <li id="summaryNav" class="nav-item nav-link" role="presentation">
+                Summary
+              </li>
+            </ul>
 
-      <!-- deleted Card -->
-      <div class="col-4">
-        <h1>Deleted Tasks</h1>
-        <div class="card" style="width: 18rem">
-          <ul
-            id="deletedCard"
-            class="list-group list-group-flush"
-            style="display: none"
-          ></ul>
+            <h1>To Do</h1>
+
+            <!-- Button to trigger add task modal -->
+            <span
+              ><button
+                type="button"
+                id="addTaskModalBtn"
+                class="btn btn-danger btn-circle"
+                data-bs-toggle="modal"
+                data-bs-target="#taskModal"
+              >
+                <i class="bi bi-plus"></i>
+              </button>
+            </span>
+
+            <!-- tasks card -->
+            <div id="taskDiv" class="card" style="width: 18rem">
+              <ul id="dynamicUl" class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <h5 class="card-title">
+                    go to gym
+                    <input
+                      class="form-check-input checkBox"
+                      type="checkbox"
+                      value=""
+                      aria-label="..."
+                      onclick="deleteTaskFunc(123)"
+                    />
+                  </h5>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">
+                    <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
+                    10:00, 23.04
+                  </h6>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title">
+                    Card title
+                    <input
+                      class="form-check-input checkBox"
+                      type="checkbox"
+                      value=""
+                    />
+                  </h5>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">
+                    Card subtitle
+                  </h6>
+                </li>
+              </ul>
+            </div>
+
+            <!-- summarize card -->
+            <h1>summary</h1>
+            <div id="summaryDiv" class="card" style="width: 18rem">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <h5 class="card-title">Today Tasks:</h5>
+                  <h6
+                    id="dynamicCompletedToday"
+                    class="card-subtitle mb-2 text-body-secondary"
+                  ></h6>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title">Total Completed Tasks:</h5>
+                  <h6
+                    id="dynamicCompleted"
+                    class="card-subtitle mb-2 text-body-secondary"
+                  ></h6>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title">Total deleted Tasks:</h5>
+                  <h6
+                    id="dynamicDeleted"
+                    class="card-subtitle mb-2 text-body-secondary"
+                  >
+                    <span id="dynamicTotalDeleted"></span>
+                    <i
+                      id="expandDeletedBtn"
+                      class="bi bi-chevron-expand border border-dark border-1 rounded-pill"
+                    ></i>
+                  </h6>
+                </li>
+              </ul>
+            </div>
+
+            <!-- deleted Card -->
+            <h1>Deleted Tasks</h1>
+            <div id="deleteDiv" class="card" style="width: 18rem">
+              <ul
+                id="deletedCard"
+                class="list-group list-group-flush"
+                style="display: none"
+              ></ul>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- add task modal -->
     <div
@@ -221,30 +251,40 @@
 
     <!-- TODO:change this to js file -->
     <script>
-      let addTaskBtn = document.getElementById("addTaskBtn");
+      //variable for navBar toggle handling
+      let allTasksNav = document.getElementById("allTasksNav");
+      let summaryNav = document.getElementById("summaryNav");
+      let deletedNav = document.getElementById("deletedNav");
+
+      //variable for user inputs handling
       let date = document.getElementById("chooseDate");
       let taskName = document.getElementById("taskName");
       let priority = document.getElementById("prioritySelect");
+
+      //variable for render tasks handling
       let dynamicUl = document.getElementById("dynamicUl");
       let taskModal = document.getElementById("taskModal");
 
-      //TODO:for edit
+      //variable for add tasks handling
+      let addTaskBtn = document.getElementById("addTaskBtn");
+
+      //variable for edit handling
       let addTaskModalBtn = document.getElementById("addTaskModalBtn");
       let editTaskBtn = document.getElementById("editTaskBtn");
 
-      //variables for alerts handeling
+      //variables for alerts handling
       let taskNameP = document.getElementById("taskNameP");
       let dateP = document.getElementById("dateP");
       let priorityP = document.getElementById("priorityP");
 
-      // variables for summary handeling
+      // variables for summary handling
       let completed = document.getElementById("dynamicCompleted");
       let completedToday = document.getElementById("dynamicCompletedToday");
 
-      //variable for expand Deleted Tasks handeling
+      //variable for expand Deleted Tasks handling
       let expandDeletedBtn = document.getElementById("expandDeletedBtn");
 
-      //variable for deleted card handeling
+      //variable for deleted card handling
       let deletedCard = document.getElementById("deletedCard");
 
       //global variable to toggle between edit and new tasks
@@ -270,18 +310,16 @@
           let str = "";
           if (tasksArr[i]["finishTask"]) {
             str += `<li class="list-group-item">
-                      <h5 class="card-title fw-lighter text-decoration-line-through">
+                      <h5 class="card-title text-decoration-line-through">
                         <i class="bi bi-clipboard-check pe-2" onClick="undoFinishTaskFunc(${tasksArr[i].taskId})"></i>
                       ${tasksArr[i]["taskName"]}
                       <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
                       </h5>`;
             str += renderPriorityFunc(tasksArr[i]["priority"]);
-            str += `<h6 class="card-subtitle mb-2 text-body-secondary fw-lighter">
-                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}
-                      </h6>
-                    </li>`;
+            str += renderDateFunc(tasksArr[i]["date"]);
+            str += `</li>`;
           } else {
-            str += `<li class="list-group-item">
+            str += `<li class="list-group-item ">
                       <h5 class="card-title">
                       <input
                       class="form-check-input checkBox"
@@ -291,17 +329,14 @@
                     />
                     ${tasksArr[i]["taskName"]}
                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
-                     <i class="bi bi-pencil"
+                     <i class="bi bi-pencil pencil"
                       data-bs-toggle="modal"
                       data-bs-target="#taskModal"
                       onclick="editTaskModalBtnFunc(${tasksArr[i].taskId})">
                       </i>
                       </h5>`;
             str += renderPriorityFunc(tasksArr[i]["priority"]);
-            str += `<h6 class="card-subtitle mb-2 text-body-secondary">
-                        <i class="bi bi-calendar"></i> ${tasksArr[i]["date"]}`;
-            str += renderTodaySpan(tasksArr[i]["date"]);
-            str += `</h6>`;
+            str += renderDateFunc(tasksArr[i]["date"]);
             str += `</li>`;
           }
 
@@ -318,19 +353,27 @@
         };
         let priority = priorityObj[`${priorityVal}`][0];
         let priorityColor = priorityObj[`${priorityVal}`][1];
-        let str = `<h6 class="priority bg-${priorityColor} bg-gradient text-white ">
+        let str = `<h6 class="priority bg-gradient text-${priorityColor} mb-2 ">
                           ${priority}
                   </h6>`;
         return str;
       }
 
-      function renderTodaySpan(date) {
+      //render date
+      function renderDateFunc(date) {
+        let str = ` <h6 class="card-subtitle mb-2 text-body-secondary">
+                        <i class="bi bi-calendar"></i>
+                        ${renderTodayOrDate(date)}
+                    </h6>`;
+        return str;
+      }
+
+      //check if today or another date
+      function renderTodayOrDate(date) {
         let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
         let taskDate = Date.parse(new Date(date).toDateString());
         let str = "";
-        todayDate == taskDate
-          ? (str = `<span class="mb-2 text-danger border rounded border-danger mx-2 p-1"> today </span>`)
-          : (str = `<span></span>`);
+        todayDate == taskDate ? (str = ` Today`) : (str = ` ${date}`);
         return str;
       }
 
@@ -341,7 +384,7 @@
         for (let i = 0; i < deletedTasks.length; i++) {
           let str = "";
           str += `<li class="list-group-item">
-              <h5 class="card-title fw-lighter text-decoration-line-through">
+              <h5 class="card-title text-decoration-line-through">
                 ${deletedTasks[i].taskName}
               </h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">
@@ -475,7 +518,7 @@
 
       // add task, update the local storage, render tasks to screen.
       // or
-      // handle edit task.
+      // handle edit task(delete the exist and add the edit one).
       const addTaskFunc = () => {
         if (validationFunc()) {
           if (isEdit) {
@@ -511,6 +554,24 @@
       const cleanPAlertsFunc = (p) => {
         if (p.textContent !== "") p.textContent = "";
       };
+
+      //event listeners - nav bar toggle
+      allTasksNav.addEventListener("click", () => {
+        taskDiv.style.display = "block";
+        summaryDiv.style.display = "none";
+        deleteDiv.style.display = "none";
+      });
+
+      summaryNav.addEventListener("click", () => {
+        summaryDiv.style.display = "block";
+        taskDiv.style.display = "none";
+        deleteDiv.style.display = "none";
+      });
+      deletedNav.addEventListener("click", () => {
+        deleteDiv.style.display = "block";
+        summaryDiv.style.display = "none";
+        taskDiv.style.display = "none";
+      });
 
       //event listener - add task, clear alerts
       addTaskBtn.addEventListener("click", addTaskFunc);
