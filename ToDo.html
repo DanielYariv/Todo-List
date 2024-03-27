@@ -62,7 +62,7 @@
       }
       .sidebar {
         height: 100vh;
-        position: absolute;
+        position: fixed;
       }
       .nav-link {
         margin: 0 auto;
@@ -295,20 +295,20 @@
 
       //render tasks to screen
       // TODO:CHECK IF I CAN DELETE TASKARR AND LEFT ONLY WITH tASK
-      function renderTasksFunc(tasksArr) {
+      function renderTasksFunc() {
         dynamicUl.innerHTML = "";
-        console.log(tasksArr);
-        for (let i = 0; i < tasksArr.length; i++) {
+        console.log(tasks);
+        for (let i = 0; i < tasks.length; i++) {
           let str = "";
-          if (tasksArr[i]["finishTask"]) {
+          if (tasks[i]["finishTask"]) {
             str += `<li class="list-group-item">
                       <h5 class="card-title text-decoration-line-through">
-                        <i class="bi bi-clipboard-check pe-2" onClick="undoFinishTaskFunc(${tasksArr[i].taskId})"></i>
-                      ${tasksArr[i]["taskName"]}
-                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
+                        <i class="bi bi-clipboard-check pe-2" onClick="undoFinishTaskFunc(${tasks[i].taskId})"></i>
+                      ${tasks[i]["taskName"]}
+                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
                       </h5>`;
-            str += renderPriorityFunc(tasksArr[i]["priority"]);
-            str += renderDateFunc(tasksArr[i]["date"]);
+            str += renderPriorityFunc(tasks[i]["priority"]);
+            str += renderDateFunc(tasks[i]["date"]);
             str += `</li>`;
           } else {
             str += `<li class="list-group-item ">
@@ -317,18 +317,18 @@
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
-                      onclick="finishTaskFunc (${tasksArr[i].taskId})";
+                      onclick="finishTaskFunc (${tasks[i].taskId})";
                     />
-                    ${tasksArr[i]["taskName"]}
-                     <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasksArr[i].taskId})"></i>
+                    ${tasks[i]["taskName"]}
+                     <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
                      <i class="bi bi-pencil pencil"
                       data-bs-toggle="modal"
                       data-bs-target="#taskModal"
-                      onclick="editTaskModalBtnFunc(${tasksArr[i].taskId})">
+                      onclick="editTaskModalBtnFunc(${tasks[i].taskId})">
                       </i>
                       </h5>`;
-            str += renderPriorityFunc(tasksArr[i]["priority"]);
-            str += renderDateFunc(tasksArr[i]["date"]);
+            str += renderPriorityFunc(tasks[i]["priority"]);
+            str += renderDateFunc(tasks[i]["date"]);
             str += `</li>`;
           }
 
@@ -405,7 +405,7 @@
 
         tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
-        renderTasksFunc(tasks);
+        renderTasksFunc();
       }
 
       //finish task, update local storage, render tasks based on there finishTask value
@@ -418,7 +418,7 @@
         localStorage["tasks"] = JSON.stringify(tasks);
         console.log(tasks);
         setTimeout(function () {
-          renderTasksFunc(tasks);
+          renderTasksFunc();
         }, 302);
       }
 
@@ -428,7 +428,7 @@
         tasks[index]["finishTask"] = false;
         sortTasksFunction();
         localStorage["tasks"] = JSON.stringify(tasks);
-        renderTasksFunc(tasks);
+        renderTasksFunc();
       }
 
       //sort by dates and if equal by priority
@@ -520,7 +520,7 @@
           tasks.push(task);
           sortTasksFunction();
           localStorage["tasks"] = JSON.stringify(tasks);
-          renderTasksFunc(tasks);
+          renderTasksFunc();
           location.reload();
         }
       };
@@ -541,7 +541,7 @@
 
       //event listeners - nav bar toggle
       allTasksNav.addEventListener("click", () => {
-        renderTasksFunc(tasks);
+        renderTasksFunc();
         taskDiv.style.display = "block";
         summaryDiv.style.display = "none";
         deleteDiv.style.display = "none";
@@ -588,7 +588,7 @@
       });
 
       //render all the tasks to the screen
-      renderTasksFunc(tasks);
+      renderTasksFunc();
     </script>
     <!-- my js  -->
     <!-- <script src="ToDo.js"></script> -->
