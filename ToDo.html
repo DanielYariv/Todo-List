@@ -41,7 +41,6 @@
 
       .bi-pencil:hover,
       .bi-trash3:hover,
-      #expandDeletedBtn:hover,
       .bi-clipboard-check:hover,
       .form-check-input:hover {
         cursor: pointer;
@@ -115,7 +114,6 @@
           </div>
 
           <div class="col-md-9 col-lg-10 main">
-            <h1>To Do</h1>
             <!-- Button to trigger add task modal -->
             <span
               ><button
@@ -131,42 +129,15 @@
 
             <!-- tasks card -->
             <div id="taskDiv" class="card mx-5" style="width: 50%">
-              <ul id="dynamicUl" class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <h5 class="card-title">
-                    go to gym
-                    <input
-                      class="form-check-input checkBox"
-                      type="checkbox"
-                      value=""
-                      aria-label="..."
-                      onclick="deleteTaskFunc(123)"
-                    />
-                  </h5>
-                  <h6 class="card-subtitle mb-2 text-body-secondary">
-                    <i class="bi bi-calendar" onclick="deleteTaskFunc(123)"></i>
-                    10:00, 23.04
-                  </h6>
-                </li>
-                <li class="list-group-item">
-                  <h5 class="card-title">
-                    Card title
-                    <input
-                      class="form-check-input checkBox"
-                      type="checkbox"
-                      value=""
-                    />
-                  </h5>
-                  <h6 class="card-subtitle mb-2 text-body-secondary">
-                    Card subtitle
-                  </h6>
-                </li>
-              </ul>
+              <ul id="dynamicUl" class="list-group list-group-flush"></ul>
             </div>
 
             <!-- summarize card -->
-            <h1>summary</h1>
-            <div id="summaryDiv" class="card mx-5" style="width: 18rem">
+            <div
+              id="summaryDiv"
+              class="card mx-5"
+              style="width: 18rem; display: none"
+            >
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                   <h5 class="card-title">Today Tasks:</h5>
@@ -189,23 +160,18 @@
                     class="card-subtitle mb-2 text-body-secondary"
                   >
                     <span id="dynamicTotalDeleted"></span>
-                    <i
-                      id="expandDeletedBtn"
-                      class="bi bi-chevron-expand border border-dark border-1 rounded-pill"
-                    ></i>
                   </h6>
                 </li>
               </ul>
             </div>
 
             <!-- deleted Card -->
-            <h1>Deleted Tasks</h1>
-            <div id="deleteDiv" class="card mx-5" style="width: 18rem">
-              <ul
-                id="deletedCard"
-                class="list-group list-group-flush"
-                style="display: none"
-              ></ul>
+            <div
+              id="deleteDiv"
+              class="card mx-5"
+              style="width: 18rem; display: none"
+            >
+              <ul id="deletedCard" class="list-group list-group-flush"></ul>
             </div>
           </div>
         </div>
@@ -309,9 +275,6 @@
       // variables for summary handling
       let completed = document.getElementById("dynamicCompleted");
       let completedToday = document.getElementById("dynamicCompletedToday");
-
-      //variable for expand Deleted Tasks handling
-      let expandDeletedBtn = document.getElementById("expandDeletedBtn");
 
       //variable for deleted card handling
       let deletedCard = document.getElementById("deletedCard");
@@ -443,11 +406,6 @@
         tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
         renderTasksFunc(tasks);
-        summaryFunc();
-        renderDeletedTasksFunc();
-        deletedTasks.sort(function (a, b) {
-          return Date.parse(a.date) - Date.parse(b.date);
-        });
       }
 
       //finish task, update local storage, render tasks based on there finishTask value
@@ -459,7 +417,6 @@
         sortTasksFunction();
         localStorage["tasks"] = JSON.stringify(tasks);
         console.log(tasks);
-        summaryFunc();
         setTimeout(function () {
           renderTasksFunc(tasks);
         }, 302);
@@ -471,7 +428,6 @@
         tasks[index]["finishTask"] = false;
         sortTasksFunction();
         localStorage["tasks"] = JSON.stringify(tasks);
-        summaryFunc();
         renderTasksFunc(tasks);
       }
 
@@ -565,19 +521,18 @@
           sortTasksFunction();
           localStorage["tasks"] = JSON.stringify(tasks);
           renderTasksFunc(tasks);
-          summaryFunc();
           location.reload();
         }
       };
 
-      function expandDeletedFunc() {
-        if (deletedCard.style.display == "none") {
-          deletedCard.style.display = "block";
-          renderDeletedTasksFunc();
-        } else {
-          deletedCard.style.display = "none";
-        }
-      }
+      // function expandDeletedFunc() {
+      //   if (deletedCard.style.display == "none") {
+      //     deletedCard.style.display = "block";
+      //     renderDeletedTasksFunc();
+      //   } else {
+      //     deletedCard.style.display = "none";
+      //   }
+      // }
 
       //clear alerts
       const cleanPAlertsFunc = (p) => {
@@ -586,17 +541,20 @@
 
       //event listeners - nav bar toggle
       allTasksNav.addEventListener("click", () => {
+        renderTasksFunc(tasks);
         taskDiv.style.display = "block";
         summaryDiv.style.display = "none";
         deleteDiv.style.display = "none";
       });
 
       summaryNav.addEventListener("click", () => {
+        summaryFunc();
         summaryDiv.style.display = "block";
         taskDiv.style.display = "none";
         deleteDiv.style.display = "none";
       });
       deletedNav.addEventListener("click", () => {
+        renderDeletedTasksFunc();
         deleteDiv.style.display = "block";
         summaryDiv.style.display = "none";
         taskDiv.style.display = "none";
@@ -607,9 +565,6 @@
 
       //event listener - edit task, clear alerts
       editTaskBtn.addEventListener("click", addTaskFunc);
-
-      //event listener - show all deleted tasks
-      expandDeletedBtn.addEventListener("click", expandDeletedFunc);
 
       //event listener - open modal for adding task
       addTaskModalBtn.addEventListener("click", () => {
@@ -634,9 +589,6 @@
 
       //render all the tasks to the screen
       renderTasksFunc(tasks);
-
-      //render summary to the screen
-      summaryFunc();
     </script>
     <!-- my js  -->
     <!-- <script src="ToDo.js"></script> -->
