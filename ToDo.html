@@ -42,7 +42,10 @@
       .bi-pencil:hover,
       .bi-trash3:hover,
       .bi-clipboard-check:hover,
-      .form-check-input:hover {
+      .form-check-input:hover,
+      #allTasksNav:hover,
+      #deletedNav:hover,
+      #summaryNav:hover {
         cursor: pointer;
       }
       .gradient {
@@ -71,6 +74,15 @@
       .main {
         position: absolute;
         margin-left: 25%;
+      }
+      #addTaskModalBtn {
+        position: fixed;
+        z-index: 1;
+      }
+      #taskDiv,
+      #summaryDiv,
+      #deleteDiv {
+        margin-top: 10%;
       }
     </style>
   </head>
@@ -113,13 +125,14 @@
             </ul>
           </div>
 
+          <!-- main -->
           <div class="col-md-9 col-lg-10 main">
             <!-- Button to trigger add task modal -->
             <span
               ><button
                 type="button"
                 id="addTaskModalBtn"
-                class="btn btn-danger btn-circle"
+                class="btn btn-danger btn-circle mt-5"
                 data-bs-toggle="modal"
                 data-bs-target="#taskModal"
               >
@@ -136,7 +149,7 @@
             <div
               id="summaryDiv"
               class="card mx-5"
-              style="width: 18rem; display: none"
+              style="width: 50%; display: none"
             >
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
@@ -169,7 +182,7 @@
             <div
               id="deleteDiv"
               class="card mx-5"
-              style="width: 18rem; display: none"
+              style="width: 50%; display: none"
             >
               <ul id="deletedCard" class="list-group list-group-flush"></ul>
             </div>
@@ -237,7 +250,7 @@
       </div>
     </div>
 
-    <!-- bootstrap  -->
+    <!-- bootstrap -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -444,7 +457,6 @@
 
       //function to change user ui from adding to edit
       function editTaskModalBtnFunc(taskId) {
-        // TODO: check why i cant use the listeners from init it work with taskName and not with priority and date they undefined
         let taskIndex = findIndex(taskId);
         editTaskId = taskId;
         addTaskBtn.style.display = "none";
@@ -456,7 +468,6 @@
       }
 
       //function for summarize
-      // TODO:check if to change all the function i want to use localStorage
       function summaryFunc() {
         let todayTa = 0;
         let todayCo = 0;
@@ -524,15 +535,6 @@
           location.reload();
         }
       };
-
-      // function expandDeletedFunc() {
-      //   if (deletedCard.style.display == "none") {
-      //     deletedCard.style.display = "block";
-      //     renderDeletedTasksFunc();
-      //   } else {
-      //     deletedCard.style.display = "none";
-      //   }
-      // }
 
       //clear alerts
       const cleanPAlertsFunc = (p) => {
