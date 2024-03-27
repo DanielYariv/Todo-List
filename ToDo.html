@@ -27,7 +27,7 @@
         font-size: 10px;
       }
       .priority {
-        width: 35%;
+        width: 15%;
         text-align: center;
         height: 1.3rem;
       }
@@ -61,32 +61,61 @@
         display: inline-block;
         justify-content: space-between;
       }
+      .sidebar {
+        height: 100vh;
+        position: absolute;
+      }
+      .nav-link {
+        margin: 0 auto;
+        width: 100%;
+      }
+      .main {
+        position: absolute;
+        margin-left: 25%;
+      }
     </style>
   </head>
   <body>
     <section class="vh-100 gradient">
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col col-xl-10">
-            <!-- bav bar -->
+      <div class="container-fluid">
+        <div class="row">
+          <!-- nav bar -->
+          <div class="col-md-3 col-lg-2 sidebar bg-dark">
+            <div class="text-center pt-3 pb-2">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                alt="Check"
+                width="60"
+              />
+              <h2 class="my-4 text-white">To Do List</h2>
+            </div>
             <ul class="nav nav-tabs mb-4 pb-2" id="ToDoNav" role="tablist">
               <li
                 id="allTasksNav"
-                class="nav-item nav-link"
+                class="nav-item nav-link text-white text-center"
                 role="presentation"
               >
                 All
               </li>
-              <li id="deletedNav" class="nav-item nav-link" role="presentation">
+              <li
+                id="deletedNav"
+                class="nav-item nav-link text-white text-center"
+                role="presentation"
+              >
                 Deleted
               </li>
-              <li id="summaryNav" class="nav-item nav-link" role="presentation">
+              <li
+                id="summaryNav"
+                class="nav-item nav-link text-white text-center"
+                role="presentation"
+              >
                 Summary
               </li>
             </ul>
+          </div>
 
+          <div class="col-md-9 col-lg-10 main">
             <h1>To Do</h1>
-
             <!-- Button to trigger add task modal -->
             <span
               ><button
@@ -101,7 +130,7 @@
             </span>
 
             <!-- tasks card -->
-            <div id="taskDiv" class="card" style="width: 18rem">
+            <div id="taskDiv" class="card mx-5" style="width: 50%">
               <ul id="dynamicUl" class="list-group list-group-flush">
                 <li class="list-group-item">
                   <h5 class="card-title">
@@ -137,7 +166,7 @@
 
             <!-- summarize card -->
             <h1>summary</h1>
-            <div id="summaryDiv" class="card" style="width: 18rem">
+            <div id="summaryDiv" class="card mx-5" style="width: 18rem">
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                   <h5 class="card-title">Today Tasks:</h5>
@@ -171,7 +200,7 @@
 
             <!-- deleted Card -->
             <h1>Deleted Tasks</h1>
-            <div id="deleteDiv" class="card" style="width: 18rem">
+            <div id="deleteDiv" class="card mx-5" style="width: 18rem">
               <ul
                 id="deletedCard"
                 class="list-group list-group-flush"
