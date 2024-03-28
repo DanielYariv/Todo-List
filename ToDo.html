@@ -33,6 +33,12 @@
       }
       .form-check-input[type="checkbox"] {
         border-radius: 50em;
+        background-color: gray;
+      }
+      .form-check-input[type="checkbox"]:checked {
+        border-radius: 50em;
+        background-color: gray;
+        border-color: gray;
       }
 
       .list-group-item {
@@ -50,10 +56,10 @@
       }
       .gradient {
         background: linear-gradient(#28313b, #485461);
+        height: 100vh;
+        width: 100vw;
       }
-      .checkBox {
-        background: grey;
-      }
+
       .trash,
       .pencil {
         display: none;
@@ -65,131 +71,121 @@
       }
       .sidebar {
         height: 100vh;
-        position: fixed;
       }
+
       .nav-link {
         margin: 0 auto;
         width: 100%;
       }
-      .main {
-        position: absolute;
-        margin-left: 25%;
-      }
       #addTaskModalBtn {
-        position: fixed;
+        position: absolute;
+        margin-top: 7%;
+        margin-left: 16%;
         z-index: 1;
       }
-      #taskDiv,
-      #summaryDiv,
-      #deleteDiv {
-        margin-top: 10%;
+      .card {
+        width: 50%;
+        margin: 0 auto;
+        margin-top: 12%;
+        overflow-y: auto;
+        max-height: 500px;
       }
     </style>
   </head>
   <body>
-    <section class="vh-100 gradient">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- nav bar -->
-          <div class="col-md-3 col-lg-2 sidebar bg-dark">
-            <div class="text-center pt-3 pb-2">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
-                alt="Check"
-                width="60"
-              />
-              <h2 class="my-4 text-white">To Do List</h2>
-            </div>
-            <ul class="nav nav-tabs mb-4 pb-2" id="ToDoNav" role="tablist">
-              <li
-                id="allTasksNav"
-                class="nav-item nav-link text-white text-center"
-                role="presentation"
-              >
-                All
+    <div class="container-fluid gradient">
+      <div class="row">
+        <!-- nav bar -->
+        <div class="col-md-2 sidebar bg-dark">
+          <div class="text-center pt-5 pb-2">
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+              alt="Check"
+              width="60"
+            />
+            <h2 class="my-4 text-white">To Do List</h2>
+          </div>
+          <ul class="nav nav-tabs mb-4 pb-2" id="ToDoNav" role="tablist">
+            <li
+              id="allTasksNav"
+              class="nav-item nav-link text-white text-center"
+              role="presentation"
+            >
+              All
+            </li>
+            <li
+              id="deletedNav"
+              class="nav-item nav-link text-white text-center"
+              role="presentation"
+            >
+              Deleted
+            </li>
+            <li
+              id="summaryNav"
+              class="nav-item nav-link text-white text-center"
+              role="presentation"
+            >
+              Summary
+            </li>
+          </ul>
+        </div>
+
+        <!-- main -->
+        <div class="col-md-10 main">
+          <!-- Button to trigger add task modal -->
+          <span
+            ><button
+              type="button"
+              id="addTaskModalBtn"
+              class="btn btn-danger btn-circle"
+              data-bs-toggle="modal"
+              data-bs-target="#taskModal"
+            >
+              <i class="bi bi-plus"></i>
+            </button>
+          </span>
+
+          <!-- tasks card -->
+          <div id="taskDiv" class="card">
+            <ul id="dynamicUl" class="list-group list-group-flush"></ul>
+          </div>
+
+          <!-- summarize card -->
+          <div id="summaryDiv" class="card" style="display: none">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <h5 class="card-title">Today Tasks:</h5>
+                <h6
+                  id="dynamicCompletedToday"
+                  class="card-subtitle mb-2 text-body-secondary"
+                ></h6>
               </li>
-              <li
-                id="deletedNav"
-                class="nav-item nav-link text-white text-center"
-                role="presentation"
-              >
-                Deleted
+              <li class="list-group-item">
+                <h5 class="card-title">Total Completed Tasks:</h5>
+                <h6
+                  id="dynamicCompleted"
+                  class="card-subtitle mb-2 text-body-secondary"
+                ></h6>
               </li>
-              <li
-                id="summaryNav"
-                class="nav-item nav-link text-white text-center"
-                role="presentation"
-              >
-                Summary
+              <li class="list-group-item">
+                <h5 class="card-title">Total deleted Tasks:</h5>
+                <h6
+                  id="dynamicDeleted"
+                  class="card-subtitle mb-2 text-body-secondary"
+                >
+                  <span id="dynamicTotalDeleted"></span>
+                </h6>
               </li>
             </ul>
           </div>
 
-          <!-- main -->
-          <div class="col-md-9 col-lg-10 main">
-            <!-- Button to trigger add task modal -->
-            <span
-              ><button
-                type="button"
-                id="addTaskModalBtn"
-                class="btn btn-danger btn-circle mt-5"
-                data-bs-toggle="modal"
-                data-bs-target="#taskModal"
-              >
-                <i class="bi bi-plus"></i>
-              </button>
-            </span>
-
-            <!-- tasks card -->
-            <div id="taskDiv" class="card mx-5" style="width: 50%">
-              <ul id="dynamicUl" class="list-group list-group-flush"></ul>
-            </div>
-
-            <!-- summarize card -->
-            <div
-              id="summaryDiv"
-              class="card mx-5"
-              style="width: 50%; display: none"
-            >
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <h5 class="card-title">Today Tasks:</h5>
-                  <h6
-                    id="dynamicCompletedToday"
-                    class="card-subtitle mb-2 text-body-secondary"
-                  ></h6>
-                </li>
-                <li class="list-group-item">
-                  <h5 class="card-title">Total Completed Tasks:</h5>
-                  <h6
-                    id="dynamicCompleted"
-                    class="card-subtitle mb-2 text-body-secondary"
-                  ></h6>
-                </li>
-                <li class="list-group-item">
-                  <h5 class="card-title">Total deleted Tasks:</h5>
-                  <h6
-                    id="dynamicDeleted"
-                    class="card-subtitle mb-2 text-body-secondary"
-                  >
-                    <span id="dynamicTotalDeleted"></span>
-                  </h6>
-                </li>
-              </ul>
-            </div>
-
-            <!-- deleted Card -->
-            <div
-              id="deleteDiv"
-              class="card mx-5"
-              style="width: 50%; display: none"
-            >
-              <ul id="deletedCard" class="list-group list-group-flush"></ul>
-            </div>
+          <!-- deleted Card -->
+          <div id="deleteDiv" class="card" style="display: none">
+            <ul id="deletedCard" class="list-group list-group-flush"></ul>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
     <!-- add task modal -->
     <div
@@ -256,7 +252,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-
+    <!-- TODO:i need to change location for trash and pencil to the right and to fix background height and to think about the delete card its too long -->
     <!-- TODO:change this to js file -->
     <script>
       //variable for navBar toggle handling
@@ -307,7 +303,6 @@
         : (deletedTasks = []);
 
       //render tasks to screen
-      // TODO:CHECK IF I CAN DELETE TASKARR AND LEFT ONLY WITH tASK
       function renderTasksFunc() {
         dynamicUl.innerHTML = "";
         console.log(tasks);
@@ -316,7 +311,13 @@
           if (tasks[i]["finishTask"]) {
             str += `<li class="list-group-item">
                       <h5 class="card-title text-decoration-line-through">
-                        <i class="bi bi-clipboard-check pe-2" onClick="undoFinishTaskFunc(${tasks[i].taskId})"></i>
+                      <input
+                      class="form-check-input checkBox"
+                      type="checkbox"
+                      checked
+                      value=""
+                      onClick="undoFinishTaskFunc(${tasks[i].taskId})"
+                      />
                       ${tasks[i]["taskName"]}
                       <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
                       </h5>`;
@@ -330,7 +331,7 @@
                       class="form-check-input checkBox"
                       type="checkbox"
                       value=""
-                      onclick="finishTaskFunc (${tasks[i].taskId})";
+                      onclick="finishTaskFunc (${tasks[i].taskId})"
                     />
                     ${tasks[i]["taskName"]}
                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
