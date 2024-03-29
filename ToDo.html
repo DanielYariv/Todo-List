@@ -42,7 +42,13 @@
       }
 
       .list-group-item {
-        background-color: grey;
+        background-color: #808080;
+      }
+      .modal-content,
+      #taskName,
+      #prioritySelect,
+      #chooseDate {
+        background-color: gray;
       }
 
       .bi-pencil:hover,
@@ -59,7 +65,9 @@
         height: 100vh;
         width: 100vw;
       }
-
+      .datePass {
+        color: #aa0000;
+      }
       .trash,
       .pencil {
         display: none;
@@ -198,7 +206,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="taskModalLabel">New Task</h5>
+            <h5 class="modal-title" id="taskModalLabel">Task</h5>
           </div>
           <div class="modal-body">
             <div class="mb-3">
@@ -351,17 +359,31 @@
       }
 
       //render priority
+      //TODO:after i show the flags to every one if they say its better then delete all the badge code
       function renderPriorityFunc(priorityVal) {
+        //code for badge:
+        // let priorityObj = {
+        //   1: ["high", "danger"],
+        //   2: ["medium", "warning"],
+        //   3: ["low", "info"],
+        // };
+        // let priority = priorityObj[`${priorityVal}`][0];
+        // let priorityColor = priorityObj[`${priorityVal}`][1];
+        // let str = `<h6 class="priority bg-gradient text-${priorityColor} mb-2 ">
+        //                   ${priority}
+        //           </h6>`;
+        // return str;
+
+        //code for flag
         let priorityObj = {
-          1: ["high", "danger"],
-          2: ["medium", "warning"],
-          3: ["low", "info"],
+          1: ["High", "danger"],
+          2: ["Medium", "warning"],
+          3: ["Low", "info"],
         };
-        let priority = priorityObj[`${priorityVal}`][0];
         let priorityColor = priorityObj[`${priorityVal}`][1];
-        let str = `<h6 class="priority bg-gradient text-${priorityColor} mb-2 ">
-                          ${priority}
-                  </h6>`;
+        let str = `<h6><i class="bi bi-flag text-${priorityColor}" title="${
+          priorityObj[`${priorityVal}`][0]
+        } Priority"></i></h6>`;
         return str;
       }
 
@@ -374,12 +396,17 @@
         return str;
       }
 
-      //check if today or another date
+      //check if today or another date if date already pass color the text in red
       function renderTodayOrDate(date) {
         let todayDate = Date.parse(new Date().toDateString()); //get the date value without consider time
         let taskDate = Date.parse(new Date(date).toDateString());
         let str = "";
-        todayDate == taskDate ? (str = ` Today`) : (str = ` ${date}`);
+        todayDate == taskDate
+          ? (str = `<span>Today</span>`)
+          : (str = ` <span>${date}</span>`);
+        if (taskDate < todayDate) {
+          str = ` <span class="datePass">${date}</span>`;
+        }
         return str;
       }
 
