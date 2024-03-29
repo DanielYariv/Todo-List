@@ -42,6 +42,7 @@
       }
 
       .list-group-item {
+        position: relative;
         background-color: #808080;
       }
       .modal-content,
@@ -97,6 +98,12 @@
         margin-top: 12%;
         overflow-y: auto;
         max-height: 500px;
+      }
+      .trashAndPencilDiv {
+        position: absolute;
+        right: 0;
+        left: auto;
+        margin-right: 30px;
       }
     </style>
   </head>
@@ -260,7 +267,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <!-- TODO:i need to change location for trash and pencil to the right and to fix background height and to think about the delete card its too long -->
     <!-- TODO:change this to js file -->
     <script>
       //variable for navBar toggle handling
@@ -297,7 +303,7 @@
       let deletedCard = document.getElementById("deletedCard");
 
       //global variable to toggle between edit and new tasks
-      let isEdit = "false";
+      let isEdit = false;
       //global variable to find specific task to edit
       let editTaskId = 0;
 
@@ -327,7 +333,9 @@
                       onClick="undoFinishTaskFunc(${tasks[i].taskId})"
                       />
                       ${tasks[i]["taskName"]}
+                      <div class="trashAndPencilDiv">
                       <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
+                      </div>
                       </h5>`;
             str += renderPriorityFunc(tasks[i]["priority"]);
             str += renderDateFunc(tasks[i]["date"]);
@@ -342,13 +350,15 @@
                       onclick="finishTaskFunc (${tasks[i].taskId})"
                     />
                     ${tasks[i]["taskName"]}
+                    <div class="trashAndPencilDiv">
                      <i class="bi bi-trash3 trash" onclick="deleteTaskFunc(${tasks[i].taskId})"></i>
                      <i class="bi bi-pencil pencil"
                       data-bs-toggle="modal"
                       data-bs-target="#taskModal"
                       onclick="editTaskModalBtnFunc(${tasks[i].taskId})">
-                      </i>
-                      </h5>`;
+                    </i>
+                    </div>
+                    </h5>`;
             str += renderPriorityFunc(tasks[i]["priority"]);
             str += renderDateFunc(tasks[i]["date"]);
             str += `</li>`;
@@ -437,13 +447,15 @@
       };
 
       //delete task, update local storage, render remaining tasks to screen
+      //if the delete is on edit task we don't need to insert task to delete tasks array
       function deleteTaskFunc(taskId) {
         console.log(taskId);
         let taskIndex = findIndex(taskId);
-
-        deletedTasks.unshift(tasks[taskIndex]);
-        localStorage["deletedTasks"] = JSON.stringify(deletedTasks);
-
+        if (!isEdit) {
+          deletedTasks.unshift(tasks[taskIndex]);
+          localStorage["deletedTasks"] = JSON.stringify(deletedTasks);
+          isEdit = false;
+        }
         tasks.splice(taskIndex, 1);
         localStorage["tasks"] = JSON.stringify(tasks);
         renderTasksFunc();
@@ -489,7 +501,7 @@
         editTaskId = taskId;
         addTaskBtn.style.display = "none";
         editTaskBtn.style.display = "block";
-        isEdit = "true";
+        isEdit = true;
         taskName.value = tasks[taskIndex].taskName;
         priority.value = tasks[taskIndex].priority;
         date.value = tasks[taskIndex].date;
