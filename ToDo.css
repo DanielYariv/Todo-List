@@ -1,0 +1,87 @@
+.btn-circle {
+    border-radius: 20px;
+  }
+  .alertP {
+    color: red;
+    margin-left: 4px;
+    font-size: 10px;
+  }
+  .priority {
+    width: 15%;
+    text-align: center;
+    height: 1.3rem;
+  }
+  .form-check-input[type="checkbox"] {
+    border-radius: 50em;
+    background-color: gray;
+  }
+  .form-check-input[type="checkbox"]:checked {
+    border-radius: 50em;
+    background-color: gray;
+    border-color: gray;
+  }
+
+  .list-group-item {
+    position: relative;
+    background-color: #808080;
+  }
+  .modal-content,
+  #taskName,
+  #prioritySelect,
+  #chooseDate {
+    background-color: gray;
+  }
+
+  .bi-pencil:hover,
+  .bi-trash3:hover,
+  .bi-clipboard-check:hover,
+  .form-check-input:hover,
+  #allTasksNav:hover,
+  #deletedNav:hover,
+  #summaryNav:hover {
+    cursor: pointer;
+  }
+  .gradient {
+    background: linear-gradient(#28313b, #485461);
+    height: 100vh;
+    width: 100vw;
+  }
+  .datePass {
+    color: #aa0000;
+  }
+  .trash,
+  .pencil {
+    display: none;
+  }
+  .list-group-item:hover .trash,
+  .list-group-item:hover .pencil {
+    display: inline-block;
+    justify-content: space-between;
+  }
+  .sidebar {
+    height: 100vh;
+  }
+
+  .nav-link {
+    margin: 0 auto;
+    width: 100%;
+  }
+  #addTaskModalBtn {
+    position: absolute;
+    margin-top: 7%;
+    margin-left: 16%;
+    z-index: 1;
+  }
+  .card {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 12%;
+    overflow-y: auto;
+    max-height: 500px;
+  }
+  .trashAndPencilDiv {
+    position: absolute;
+    right: 0;
+    left: auto;
+    margin-right: 30px;
+  }
